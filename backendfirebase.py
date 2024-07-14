@@ -10,6 +10,60 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
+def leer_archivo_json(ruta_archivo):
+    try:
+        with open(ruta_archivo, "r") as archivo:
+            datos_json = json.load(archivo)
+            return datos_json
+    except FileNotFoundError:
+        print(f"El archivo '{ruta_archivo}' no existe.")
+        return None
+    except json.JSONDecodeError:
+        print(f"Error al decodificar el archivo JSON '{ruta_archivo}'.")
+        return None
+        
+
+def update_clave_json(ruta_archivo, datos):
+    try:
+        with open(ruta_archivo, "w") as archivo:
+            json.dump(datos, archivo, indent=4)
+    except Exception as e:
+        print(f"Error al guardar el archivo JSON: {e}")
+
+
+def update_dic_json(ruta_archivo, datos):
+    try:
+        with open(ruta_archivo, "w") as archivo:
+            json.dump(datos, archivo, indent=4)
+    except Exception as e:
+        print(f"Error al guardar el archivo JSON: {e}")
+
+
+def agregar_datos_json(ruta_archivo, nuevos_datos):
+    datos_json = leer_archivo_json(ruta_archivo)
+    if datos_json is not None:
+        datos_json.update(nuevos_datos)
+        guardar_archivo_json(ruta_archivo, datos_json)
+
+
+def agregar_elemento_lista_json(ruta_archivo, clave_lista="", nuevo_elemento):
+    datos_json = leer_archivo_json(ruta_archivo)
+    if datos_json is not None:
+        if clave_lista:
+            if clave_lista in datos_json and isinstance(datos_json[clave_lista], list):
+                datos_json[clave_lista].append(nuevo_elemento)
+            else:
+                print(f"La clave '{clave_lista}' no existe o no es una lista.")
+                return
+        else:
+            if isinstance(datos_json, list):
+                datos_json.append(nuevo_elemento)
+            else:
+                print("El archivo JSON no contiene una lista en la raíz.")
+                return
+
+        update_dic_json(ruta_archivo, datos_json)
+
 @app.route('/', methods=['GET', 'POST'])
 def handle_requests():
     try:
@@ -159,3 +213,4 @@ def handle_requests():
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
+
