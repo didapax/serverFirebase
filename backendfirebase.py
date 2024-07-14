@@ -63,6 +63,7 @@ def agregar_elemento_lista_json(ruta_archivo, clave_lista="", nuevo_elemento):
                 return
 
         update_dic_json(ruta_archivo, datos_json)
+        
 
 @app.route('/', methods=['GET', 'POST'])
 def handle_requests():
