@@ -14,7 +14,14 @@ def leer_archivo_json(ruta_archivo):
     try:
         with open(ruta_archivo, "r") as archivo:
             datos_json = json.load(archivo)
-            return datos_json
+            
+            if isinstance(datos_json, list):
+                return datos_json
+            elif isinstance(datos_json, dict):
+                return list(datos_json)
+            else:
+                print("El archivo JSON contiene otro tipo de datos.")
+
     except FileNotFoundError:
         print(f"El archivo '{ruta_archivo}' no existe.")
         return None
@@ -214,4 +221,3 @@ def handle_requests():
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
-
